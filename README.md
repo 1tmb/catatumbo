@@ -1,7 +1,7 @@
 Catatumbo - JPA like Persistence Framework for Google Cloud Datastore
 ===================================================================== 
 
-[![Build Status](https://travis-ci.org/sai-pullabhotla/catatumbo.svg?branch=master)](https://travis-ci.org/sai-pullabhotla/catatumbo)
+[![Build Status](https://github.com/sai-pullabhotla/catatumbo/actions/workflows/ci.yml/badge.svg)](https://github.com/sai-pullabhotla/catatumbo/actions/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/sai-pullabhotla/catatumbo/badge.svg?branch=master)](https://coveralls.io/github/sai-pullabhotla/catatumbo?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/8b150dc94a26419fa38aa61a18c4e0dd)](https://www.codacy.com/app/sai-pullabhotla/catatumbo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=sai-pullabhotla/catatumbo&amp;utm_campaign=Badge_Grade)
 [![Maven](https://img.shields.io/maven-central/v/com.jmethods/catatumbo.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.jmethods%22%20a%3A%22catatumbo%22)
@@ -84,5 +84,34 @@ Video Tutorials
 Please visit [http://catatumbo.io/video-tutorials.html](http://catatumbo.io/video-tutorials.html)
 
 API Documentation
------------------ 
-Online documentation (Javadocs) for Catatumbo API is available at [http://catatumbo.io/api-docs.html](http://catatumbo.io/api-docs.html). 
+-----------------
+Online documentation (Javadocs) for Catatumbo API is available at [http://catatumbo.io/api-docs.html](http://catatumbo.io/api-docs.html).
+
+Running Tests
+-------------
+The test suite requires a connection to Google Cloud Datastore. There are two modes:
+
+**CI mode** (self-contained): Set `CI=true` and the tests will automatically start an in-process
+Datastore emulator via `LocalDatastoreHelper`. This requires the
+[Cloud Datastore Emulator](https://cloud.google.com/datastore/docs/tools/datastore-emulator) to
+be installed (part of the Google Cloud SDK).
+
+```
+CI=true mvn test
+```
+
+**Manual mode**: Point the tests at an already-running Datastore emulator (or a real project)
+using environment variables:
+
+| Variable | Description |
+|---|---|
+| `CATATUMBO_SERVICE_URL` | Emulator URL, e.g. `http://localhost:8081` |
+| `CATATUMBO_PROJECT_ID` | GCP project ID |
+| `CATATUMBO_NAMESPACE` | Datastore namespace (optional) |
+| `CATATUMBO_CREDENTIALS` | Path to JSON credentials file (omit for emulator) |
+| `CATATUMBO_CONNECTION_TIMEOUT` | Connection timeout in milliseconds (optional) |
+| `CATATUMBO_READ_TIMEOUT` | Read timeout in milliseconds (optional) |
+
+```
+CATATUMBO_SERVICE_URL=http://localhost:8081 CATATUMBO_PROJECT_ID=my-project mvn test
+```

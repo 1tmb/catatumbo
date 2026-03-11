@@ -1,55 +1,35 @@
 Releasing Catatumbo
 ===================
 
-Maven Settings
---------------
+Releases are automated via GitHub Actions. Pushing a tag triggers the release workflow, which
+builds, signs, and publishes the artifacts directly to Maven Central.
 
-Update the ~/.m2/settings.xml to have the following settings. 
+Prerequisites
+-------------
 
-```xml
+The following secrets must be configured in the GitHub repository settings:
 
-	<settings>
-	  <profiles>
-	    <profile>
-	      <id>ossrh</id>
-	      <activation>
-	        <activeByDefault>true</activeByDefault>
-	      </activation>
-	      <properties>
-	      	<!-- Update the path to the GPG executable -->
-	        <gpg.executable>/usr/local/bin/gpg</gpg.executable>
-	        <!-- Update Passphrase to the PGP signing key -->
-	        <gpg.passphrase>YOUR_PGP_KEY_PASSPHRASE</gpg.passphrase>
-	      </properties>
-	    </profile>
-	  </profiles>
-	  <servers>
-	    <server>
-	      <id>ossrh</id>
-	      <!-- Update username and password for Sonatype. Use the token -->
-	      <username>YOUR_USERNAME</username>
-	      <password>YOUR_PASSWORD</password>
-	    </server>
-	    <server>
-	      <id>scm</id>
-	      <username>SCM_USERNAME</username>
-	      <password>SCM_PASSWORD</password>
-	    </server>
-	  </servers>
-	</settings>
-
-```
+| Secret | Description |
+|---|---|
+| `OSSRH_USERNAME` | Sonatype OSSRH username |
+| `OSSRH_TOKEN` | Sonatype OSSRH token/password |
+| `GPG_PRIVATE_KEY` | Armored GPG private key (`gpg --export-secret-keys --armor <key-id>`) |
+| `GPG_PASSPHRASE` | Passphrase for the GPG key |
 
 Procedure
 ---------
 
-1. Make sure all changes are checked into SCM. 
-2. Run all JUnit tests and make sure there are no failures 
-3. Run `mvn release:clean release:prepare`. This will update the version in the POM, checks in the POM to SCM and creates a tag.
-4. If any issues are encountered during the above step, undo the changes by running `mvn release:rollback`.   
-5. Assuming step 3 succeeded, run `mvn release:perform` to complete the release. This will create the artifacts from the previously tagged version and uploads them to staging repository. 
-6. Login to [https://oss.sonatype.org](https://oss.sonatype.org) and verify the artifacts. 
-7. If all looks good, release the artifacts to be published to Maven Central. 
-8. After a few hours, check [Maven Central](http://search.maven.org) and ensure that the new version is available.  
-
- 
+1. Make sure all changes are checked in and the build is passing.
+2. Update the version in `pom.xml` from `X.Y.Z-SNAPSHOT` to `X.Y.Z`.
+3. Commit: `git commit -am "Prepare release X.Y.Z"`
+4. Tag: `git tag catatumbo-X.Y.Z`
+5. Push the commit and tag: `git push && git push --tags`
+6. The `Release` GitHub Actions workflow will trigger automatically, build the artifacts, sign
+   them with GPG, and publish them to Maven Central.
+7. Verify the new version is available on
+   [Maven Central](https://mvnrepository.com/artifact/com.jmethods/catatumbo). The artifacts are
+   available on Sonatype almost immediately, but propagation to the Maven Central CDN and mirrors
+   (including `search.maven.org` and `mvnrepository.com`) typically takes 30 minutes to a few
+   hours.
+8. Update the version in `pom.xml` to `X.Y+1.0-SNAPSHOT` and commit:
+   `git commit -am "Prepare for next development iteration"`

@@ -50,17 +50,18 @@ public @interface SecondaryIndex {
    * &#64;SecondaryIndex
    * private String lastName;
    * </pre>
-   * 
-   * This will create two properties in the Cloud Datastore - lastName and $lastName. The $lastName
-   * will have the last names in lower case to support case insensitive searching/sorting.
-   * 
+   *
+   * <p>This will create two properties in the Cloud Datastore - lastName and $lastName. The
+   * $lastName will have the last names in lower case to support case insensitive
+   * searching/sorting.
+   *
    * <pre>
    * &#64;SecondaryIndex
    * &#64;Property(name = "lname")
    * private String lastName;
    * </pre>
-   * 
-   * The above code will create two properties - lname and $lname.
+   *
+   * <p>The above code will create two properties - lname and $lname.
    * 
    * @return the name for the secondary index.
    */
